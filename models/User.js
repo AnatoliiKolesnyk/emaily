@@ -7,4 +7,4 @@ const { Schema } = mongoose;
    credits: { type: Number, default: 0 }
  });
 
- mongoose.model('users', userSchema);
+ module.exports = mongoose.model('User', userSchema);
