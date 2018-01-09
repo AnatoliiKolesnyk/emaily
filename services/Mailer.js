@@ -1,50 +1,49 @@
 const sgMail = require('@sendgrid/mail');
-const {Mail, EmailAddress } = require('@sendgrid/helpers').classes;
+const {Mail, EmailAddress, Personalization} = require('@sendgrid/helpers').classes;
 const keys = require('../config/keys');
 
 class Mailer extends Mail {
   constructor({subject, recipients}, content) {
+    // console.log(JSON.stringify(arguments, null, 2));
     super();
 
-    this.sgApi = sendgrid(keys.sendGridKey);
+    this.sgApi = sgMail;
+    this.sgApi.setApiKey(keys.sendGridKey);
 
-    this.from_email = new EmailAddress('no-reply@emaily.com');
-    this.subject = subject;
-    this.body = new helper.Content('text/html', content);
+    this.from = new EmailAddress('no-reply@emaily.com');
+    this.setSubject(subject);
+    this.addHtmlContent(content);
     this.recipients = recipients.map(
-      ({email}) => new EmailAddress (email)
+      ({email}) => {
+        return new EmailAddress({email})
+      }
     );
+    console.log(`${ JSON.stringify(this.recipients, null, 2) }`);
 
-    this.addContent(this.body);
     this.addClickTracking();
     this.addRecipients();
   }
 
   addClickTracking() {
-    const trackingSettings = new helper.trackingSettings();
-    const clickTracking = new helper.ClickTracking();
-
-    trackingSettings.setClickTracking(clickTracking);
-    this.addTrackingSettings(trackingSettings);
+    const trackingSettings = {
+      clickTracking: {
+        enable: true,
+        enableText: true
+      }
+    };
+    this.setTrackingSettings(trackingSettings);
   }
 
   addRecipients() {
-    const personalize = new helper.Personalization();
     this.recipients.forEach(
-      recipient => personalize.addTo(recipient)
+      recipient => this.addPersonalization(
+        new Personalization({to: [recipient]})
+      )
     );
-    this.addPersonalization(personalize);
   }
 
-  async send() {
-    const request = this.sgApi.emptyRequest({
-      method: 'POST',
-      path: '/v3/mail/send',
-      body: this.toJSON()
-    });
-
-    const response = await this.sgApi.API(request);
-    return response;
+  send() {
+    return this.sgApi.send(this);
   }
 }
 
