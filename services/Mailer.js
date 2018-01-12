@@ -4,7 +4,6 @@ const keys = require('../config/keys');
 
 class Mailer extends Mail {
   constructor({subject, recipients}, content) {
-    // console.log(JSON.stringify(arguments, null, 2));
     super();
 
     this.sgApi = sgMail;
@@ -18,7 +17,6 @@ class Mailer extends Mail {
         return new EmailAddress({email})
       }
     );
-    console.log(`${ JSON.stringify(this.recipients, null, 2) }`);
 
     this.addClickTracking();
     this.addRecipients();
