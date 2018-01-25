@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
 import {reduxForm, Field} from 'redux-form';
 import { Link } from 'react-router-dom';
-import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmails';
+import SurveyFormReview from './SurveyFormReview';
 
 class SurveyForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {formReview: false};
+  }
+
   renderField({ input, label, type, meta: { touched, error } }) {
     return (
       <div>
@@ -53,20 +58,27 @@ class SurveyForm extends Component {
   }
 
   render() {
+    const {formReview} = this.state;
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit(v => console.log(v))}>
-          {this.renderFields()}
-          <Link to="/surveys"
-                className="red btn-flat white-text">
-            Cancel
-          </Link>
-          <button type="submit"
-                  className="teal btn-flat right white-text">
-            Submit
-            <i className="material-icons right">done</i>
-          </button>
-        </form>
+        {formReview &&
+          (<SurveyFormReview onSubmit={ v => console.log(v) }
+                             onCancel={ () => this.setState({formReview: false}) }/>)
+        }
+        {formReview ||
+          (<form onSubmit={ this.props.handleSubmit( () => this.setState({formReview: true}) ) }>
+            {this.renderFields()}
+            <Link to="/surveys"
+                  className="red btn-flat white-text">
+              Cancel
+            </Link>
+            <button type="submit"
+                    className="teal btn-flat right white-text">
+              Submit
+              <i className="material-icons right">done</i>
+            </button>
+          </form>)
+        }
       </div>
     );
   }
