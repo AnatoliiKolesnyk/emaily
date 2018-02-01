@@ -5,7 +5,6 @@ import SurveyList from './surveys/SurveyList';
 export default () => {
   return (
     <div>
-      Dashboard
       <div>
         <SurveyList />
         <div className="fixed-action-btn">
