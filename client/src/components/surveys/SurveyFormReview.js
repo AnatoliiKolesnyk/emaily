@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
 import {submitSurvey} from '../../actions';
 
 class FormReview extends Component {
   onSubmit() {
-    this.props.submitSurvey();
+    const {title, subject, body, recipients, history} = this.props;
+    this.props.submitSurvey({title, subject, body, recipients}, history);
     this.props.destroy();
   }
 
@@ -61,4 +63,4 @@ export default connect(
   form: 'surveyForm',
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})(FormReview));
+})(withRouter(FormReview)));

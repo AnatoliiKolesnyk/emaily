@@ -11,8 +11,9 @@
     "start": "node index.js",
     "server": "nodemon index",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"set PORT=8080 && npm run client\"",
-    "heroku-postbuild": "npm i --prefix client && npm run build --prefix client"
+    "dev": "concurrently \"npm run server\" \"set PORT=8080 && npm run client\" \"npm run localtunnel\"",
+    "heroku-postbuild": "npm i --prefix client && npm run build --prefix client",
+    "localtunnel": "forever sendgridWebhook.js"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,8 @@
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
+    "forever": "^0.15.3",
+    "localtunnel": "^1.8.3",
     "nodemon": "^1.12.1"
   }
 }
