@@ -14,13 +14,13 @@ module.exports = app => {
   app.post('/api/surveys/webhooks', (req, res) => {
     console.log(req.body);
 
-    const events = req.body.reduce((res, {url, type, email}) => {
-      if (type !== 'click') {
+    const events = req.body.reduce((res, {url, event, email}) => {
+      if (event !== 'click') {
         return res;
       }
       const match =  url.match(/\/api\/surveys\/(.+?)\//);
       const surveyId = match && match[1];
-      if (surveyId) {
+      if (!surveyId) {
         return res;
       }
       const duplicateEvent = res.find(event => {
